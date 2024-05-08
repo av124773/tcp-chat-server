@@ -2,8 +2,12 @@ const net = require('net')
 const server = net.createServer()
 const port = 4001
 
+const sockets = []
+
 server.on('connection', (socket) => {
     console.log('Got a new connection')
+
+    sockets.push(socket)
 
     socket.on('data', (data) => {
         console.log('got data:', data)
