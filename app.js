@@ -4,6 +4,10 @@ const port = 4001
 
 server.on('connection', (socket) => {
     console.log('Got a new connection')
+
+    socket.on('data', (data) => {
+        console.log('got data:', data)
+    })
 })
 
 server.on('error', (err) => {
