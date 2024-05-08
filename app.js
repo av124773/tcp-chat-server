@@ -11,6 +11,11 @@ server.on('connection', (socket) => {
 
     socket.on('data', (data) => {
         console.log('got data:', data)
+        sockets.forEach(otherSocket => {
+            if (otherSocket !== socket) {
+                otherSocket.write(data)
+            }
+        })
     })
 })
 
