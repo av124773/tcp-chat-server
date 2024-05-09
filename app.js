@@ -5,22 +5,23 @@ const port = 4001
 const sockets = []
 
 server.on('connection', (socket) => {
-    console.log('Got a new connection')
+    const userIp = `${socket.remoteAddress}:${socket.remotePort}`
+    console.log(`Got a new connection from ${userIp}`)
 
-    sockets.push(socket)
+    sockets.push({ userIp, socket })
 
     socket.on('data', (data) => {
-        console.log('got data:', data)
+        console.log('Got data:', data, 'from', userIp)
         sockets.forEach(otherSocket => {
-            if (otherSocket !== socket) {
-                otherSocket.write(data)
+            if (otherSocket.socket !== socket) {
+                otherSocket.socket.write(data)
             }
         })
     })
 
     socket.on('end', () => {
-        console.log('connection closed')
-        const index = sockets.indexOf(socket)
+        console.log(`${userIp} disconnected`)
+        const index = sockets.findIndex((sockets) => sockets.userIp === userIp) 
         sockets.splice(index, 1)
     })
 })
