@@ -17,6 +17,12 @@ server.on('connection', (socket) => {
             }
         })
     })
+
+    socket.on('end', () => {
+        console.log('connection closed')
+        const index = sockets.indexOf(socket)
+        sockets.splice(index, 1)
+    })
 })
 
 server.on('error', (err) => {
