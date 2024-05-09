@@ -34,4 +34,6 @@ server.on('close', () => {
     console.log('Server closed')
 })
 
-server.listen(port)
+server.listen(port, () => {
+    console.log(`Server start listening in port ${port}`)
+})
