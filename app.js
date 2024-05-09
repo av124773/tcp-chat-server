@@ -5,21 +5,21 @@ const port = 4001
 const sockets = []
 
 server.on('connection', (socket) => {
-    const userIp = `${socket.remoteAddress}:${socket.remotePort}`
+    const userAddress = `${socket.remoteAddress}:${socket.remotePort}`
     let userName = null
     
     let user = {
-        userIp,
+        userAddress,
         socket,
         userName
     }
     sockets.push(user)
 
-    console.log(`Got a new connection from ${userIp}`)
+    console.log(`Got a new connection from ${userAddress}`)
     socket.write('Please Set Your Nickname:')
 
     socket.on('data', (data) => {
-        console.log('Got data:', data, 'from', userIp)
+        console.log('Got data:', data, 'from', userAddress)
 
         if (!user.userName) {
             const index = sockets.findIndex((s) => s.socket === socket )
@@ -34,8 +34,8 @@ server.on('connection', (socket) => {
     })
 
     socket.on('end', () => {
-        console.log(`${userIp} disconnected`)
-        const index = sockets.findIndex((s) => s.userIp === userIp) 
+        console.log(`${userAddress} disconnected`)
+        const index = sockets.findIndex((s) => s.userAddress === userAddress) 
         sockets.splice(index, 1)
     })
 
