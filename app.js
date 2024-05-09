@@ -2,18 +2,14 @@ const net = require('net')
 const server = net.createServer()
 const port = 4001
 
-const sockets = []
+const sockets = new Map()
 
 server.on('connection', (socket) => {
     const userAddress = `${socket.remoteAddress}:${socket.remotePort}`
     let userName = null
+    let user = { socket, userName }
     
-    let user = {
-        userAddress,
-        socket,
-        userName
-    }
-    sockets.push(user)
+    sockets.set(userAddress, user)
 
     console.log(`Got a new connection from ${userAddress}`)
     socket.write('Please Set Your Nickname:')
@@ -21,13 +17,12 @@ server.on('connection', (socket) => {
     socket.on('data', (data) => {
         console.log('Got data:', data, 'from', userAddress)
 
-        if (!user.userName) {
-            const index = sockets.findIndex((s) => s.socket === socket )
+        if (!sockets.get(userAddress).userName) {
             userName = data.toString().trim()
-            sockets[index].userName = userName
+            sockets.get(userAddress).userName = userName
 
             socket.write(`Welcome ${userName}\n`)
-            broadcast(`${userName} join\n`)
+            broadcast(`${userName} is join\n`)
         } else {
             broadcast(`${userName}:${data}`)
         }
@@ -35,16 +30,16 @@ server.on('connection', (socket) => {
 
     socket.on('end', () => {
         console.log(`${userAddress} disconnected`)
-        const index = sockets.findIndex((s) => s.userAddress === userAddress) 
-        sockets.splice(index, 1)
+        broadcast(`${userName} is exit`)
+        sockets.delete(userAddress)
     })
 
     function broadcast(data) {
-        sockets.forEach(otherSocket => {
-            if (otherSocket.socket !== socket && otherSocket.userName) {
-                otherSocket.socket.write(data)
+        for (let [address, user] of sockets) {
+            if (user.socket !== socket && user.userName) {
+                user.socket.write(data)
             }
-        })
+        }
     }
 })
 
