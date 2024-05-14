@@ -1,6 +1,6 @@
 const net = require('net')
 const server = net.createServer()
-const port = 4001
+const port = 4000
 
 const sockets = new Map()
 
@@ -15,22 +15,23 @@ server.on('connection', (socket) => {
     socket.write('Please Set Your Nickname:')
 
     socket.on('data', (data) => {
-        console.log('Got data:', data, 'from', userAddress)
+        const message = data.toString().trim()
+        console.log(`Got data:${message}, from ${userAddress}`)
 
         if (!sockets.get(userAddress).userName) {
-            userName = data.toString().trim()
+            userName = message
             sockets.get(userAddress).userName = userName
 
-            socket.write(`Welcome ${userName}\n`)
-            broadcast(`${userName} is join\n`)
+            socket.write(`Welcome to the chat ${userName}!\n\n`)
+            broadcast(`ALL:${userName} JOIN\n`)
         } else {
-            broadcast(`${userName}:${data}`)
+            broadcast(`${userName}:${message}\n`)
         }
     })
 
     socket.on('end', () => {
         console.log(`${userAddress} disconnected`)
-        broadcast(`${userName} is exit`)
+        broadcast(`ALL:${userName} EXIT\n`)
         sockets.delete(userAddress)
     })
 
