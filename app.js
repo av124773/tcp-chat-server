@@ -58,11 +58,11 @@ function onEnd(userAddress) {
     const user = sockets.get(userAddress)
     console.log(`${userAddress} disconnected`)
 
-    // Broadcast a message to all other that a user has left
-    broadcast(`ALL:${user.userName} EXIT\n`)
-
     // Remove the user from the socket map
     sockets.delete(userAddress)
+    
+    // Broadcast a message to all other that a user has left
+    broadcast(`ALL:${user.userName} EXIT\n`)
 }
 
 // Function to broadcast a message to all connected clients excetp teh sender
