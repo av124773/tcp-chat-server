@@ -30,6 +30,7 @@
     ```sh
     telnet localhost 4000
     ```
+    也可以搭配 TCP 客戶端應用 [tcp-chat-client](https://github.com/av124773/tcp-chat-client.git) 連線使用。
 
 5. **設定暱稱**：按照伺服器提示，在客戶端輸入您想要的暱稱。
 
